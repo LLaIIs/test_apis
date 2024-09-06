@@ -20,12 +20,22 @@ const Explore = () => {
   const fetchPlaces = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json`, {
-        params: {
-          key: GOOGLE_PLACES_API_KEY,
-          location: '-23.55052,-46.633308', // São Paulo como exemplo
-          radius: 5000, // Raio de busca em metros
-          type: selectedCategory // Categoria selecionada
+      const response = await axios.post('https://places.googleapis.com/v1/places:searchNearby', {
+        includedTypes: [selectedCategory], // Tipo de lugar selecionado
+        locationRestriction: {
+          circle: {
+            center: {
+              latitude: -23.55052, // Latitude
+              longitude: -46.633308 // Longitude
+            },
+            radius: 5000.0 // Raio de busca em metros
+          }
+        }
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Goog-Api-Key': GOOGLE_PLACES_API_KEY,
+          'X-Goog-FieldMask': 'places.displayName,places.formattedAddress'
         }
       });
       
@@ -38,7 +48,11 @@ const Explore = () => {
   };
 
   const renderItem = ({ item }) => {
+    const photoUrl = item.photos && item.photos[0]
+    ? `https://places.googleapis.com/v1/places/${item.place_id}/photos/${item.photos[0].photo_reference}/media?maxWidthPx=400&key=${GOOGLE_PLACES_API_KEY}`
+    : 'https://via.placeholder.com/400';
     return (
+      
       <Pressable
         style={styles.itemContainer}
         onPress={() => 
@@ -52,7 +66,7 @@ const Explore = () => {
       >
         <View style={styles.imageContainer}>
           <Image
-            source={{ uri: item.photos?.[0]?.photo_reference ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${item.photos[0].photo_reference}&key=${GOOGLE_PLACES_API_KEY}` : 'https://via.placeholder.com/400' }}
+            source={{uri:photoUrl}}
             style={styles.image}
             resizeMode="cover"
           />
