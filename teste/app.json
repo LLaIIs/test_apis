@@ -3,6 +3,7 @@
     "name": "teste",
     "slug": "teste",
     "version": "1.0.0",
+    "owner":"LLaIIs",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",

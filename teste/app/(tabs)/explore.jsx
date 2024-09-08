@@ -7,13 +7,14 @@ import { useRouter } from 'expo-router';
 
 const Explore = () => {
   const [places, setPlaces] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('restaurant'); // Categoria inicial
+  const [selectedCategory, setSelectedCategory] = useState(''); // Categoria inicial
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   
   const GOOGLE_PLACES_API_KEY = 'AIzaSyAnxfmuiu6gpPW-JDWLFooRxVX7c8Lc_LM';
 
   useEffect(() => {
+    console.log('Categoria selecionada', selectedCategory)
     fetchPlaces();
   }, [selectedCategory]);
 
@@ -21,7 +22,8 @@ const Explore = () => {
     try {
       setLoading(true);
       const response = await axios.post('https://places.googleapis.com/v1/places:searchNearby', {
-        includedTypes: [selectedCategory], // Tipo de lugar selecionado
+        includedTypes: [selectedCategory],
+        maxResultCount:10, // Tipo de lugar selecionado
         locationRestriction: {
           circle: {
             center: {
@@ -35,11 +37,11 @@ const Explore = () => {
         headers: {
           'Content-Type': 'application/json',
           'X-Goog-Api-Key': GOOGLE_PLACES_API_KEY,
-          'X-Goog-FieldMask': 'places.displayName,places.formattedAddress'
+          'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.photos'
         }
       });
       
-      setPlaces(response.data.results); // Definir os dados de lugares recebidos
+      setPlaces(response.data.places); // Definir os dados de lugares recebidos
       setLoading(false);
     } catch (error) {
       console.error('Erro ao buscar lugares:', error);
@@ -48,9 +50,11 @@ const Explore = () => {
   };
 
   const renderItem = ({ item }) => {
-    const photoUrl = item.photos && item.photos[0]
-    ? `https://places.googleapis.com/v1/places/${item.place_id}/photos/${item.photos[0].photo_reference}/media?maxWidthPx=400&key=${GOOGLE_PLACES_API_KEY}`
-    : 'https://via.placeholder.com/400';
+    const photoUri = item.photos && item.photos[0]
+      ? `https://places.googleapis.com/v1/${item.photos[0].name}/media?maxWidthPx=400&maxHeightPx=400&key=${GOOGLE_PLACES_API_KEY}`
+      : 'https://via.placeholder.com/400';
+
+      
     return (
       
       <Pressable
@@ -66,13 +70,13 @@ const Explore = () => {
       >
         <View style={styles.imageContainer}>
           <Image
-            source={{uri:photoUrl}}
+            source={{uri:photoUri}}
             style={styles.image}
             resizeMode="cover"
           />
         </View>
-        <Text style={styles.title}>{item.name}</Text>
-        <Text style={styles.description}>{item.vicinity}</Text>
+        <Text style={styles.title}>{item.displayName.text}</Text>
+        <Text style={styles.description}>{item.formattedAddress || 'Endereço não disponível'}</Text>
       </Pressable>
     );
   };

@@ -10,10 +10,9 @@ const ScrollPlaces = ({ setSelectedCategory }) => {
     { id: '2', title: 'Restaurante', type: 'restaurant', icon: { name: 'restaurant', library: 'MaterialIcons' } },
     { id: '3', title: 'Shopping', type: 'shopping_mall', icon: { name: 'bag-shopping', library: 'FontAwesome6' } },
     { id: '4', title: 'Parque', type: 'park', icon: { name: 'leaf', library: 'Ionicons' } },
-    { id: '5', title: 'Teatro', type: 'theater', icon: { name: 'theater-masks', library: 'FontAwesome5' } },
+    { id: '5', title: 'Teatro', type: 'performing_arts_theater', icon: { name: 'theater-masks', library: 'FontAwesome5' } },
     { id: '6', title: 'Museu', type: 'museum', icon: { name: 'building-columns', library: 'FontAwesome6' } },
-    { id: '7', title: 'Praia', type: 'beach', icon: { name: 'umbrella-beach', library: 'FontAwesome5' } },
-    { id: '8', title: 'Monumento', type: 'historical_landmark', icon: { name: 'monument', library: 'FontAwesome5' } }
+    { id: '7', title: 'Monumento', type: 'historical_landmark', icon: { name: 'monument', library: 'FontAwesome5' } }
   ];
 
   const renderIcon = (icon) => {
