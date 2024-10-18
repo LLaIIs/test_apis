@@ -7,7 +7,7 @@ import { useRouter } from 'expo-router';
 
 const Explore = () => {
   const [places, setPlaces] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(''); // Categoria inicial
+  const [selectedCategory, setSelectedCategory] = useState(''); // Categoria inicial tourism_attraction
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   
@@ -37,7 +37,7 @@ const Explore = () => {
         headers: {
           'Content-Type': 'application/json',
           'X-Goog-Api-Key': GOOGLE_PLACES_API_KEY,
-          'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.photos'
+          'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.photos, places.editorialSummary'
         }
       });
       
@@ -77,6 +77,7 @@ const Explore = () => {
         </View>
         <Text style={styles.title}>{item.displayName.text}</Text>
         <Text style={styles.description}>{item.formattedAddress || 'Endereço não disponível'}</Text>
+        <Text> {item.editorialSummary}</Text>
       </Pressable>
     );
   };
